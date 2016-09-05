@@ -4,6 +4,36 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
+var Lattice = React.createClass({
+  displayName: 'Lattice',
+
+  render: function render() {
+    return React.createElement(
+      'div',
+      { className: 'lattice' },
+      React.createElement(LatticeBox, null),
+      React.createElement(LatticeBox, null),
+      React.createElement(LatticeBox, null),
+      React.createElement(LatticeBox, null),
+      React.createElement(LatticeBox, null),
+      React.createElement(LatticeBox, null),
+      React.createElement(LatticeBox, null),
+      React.createElement(LatticeBox, null),
+      React.createElement(LatticeBox, null)
+    );
+  }
+});
+
+var LatticeBox = React.createClass({
+  displayName: 'LatticeBox',
+
+  render: function render() {
+    return React.createElement('div', { className: 'lattice__box' });
+  }
+});
+
+ReactDOM.render(React.createElement(Lattice, null), document.getElementById('container'));
+
 },{"react":172,"react-dom":29}],2:[function(require,module,exports){
 (function (process){
 'use strict';

@@ -16,5 +16,8 @@
   "scripts": {
     "build": "browserify ./main.js -t babelify -o bundle.js",
     "start": "watchify ./main.js -v -t babelify -o bundle.js"
+  },
+  "devDependencies": {
+    "babel-preset-react": "^6.11.1"
   }
 }
