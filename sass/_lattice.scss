@@ -1,0 +1,14 @@
+$box-side: 150px;
+
+.lattice {
+  height: (3 * $box-side);
+  width: (3 * $box-side);
+}
+
+.lattice__box {
+  border: 1px solid #000;
+  box-sizing: border-box;
+  display: inline-block;
+  height: $box-side;
+  width: $box-side;
+}
