@@ -6,9 +6,21 @@ $box-side: 150px;
 }
 
 .lattice__box {
+  background-color: #FFF;
   border: 1px solid #000;
   box-sizing: border-box;
   display: inline-block;
   height: $box-side;
+  position: relative;
   width: $box-side;
+}
+
+.box--x:before {
+  color: #000;
+  content: "\274c";
+  font-size: $box-side;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
