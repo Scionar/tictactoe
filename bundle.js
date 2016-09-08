@@ -4,6 +4,8 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
+var playerType = 'x';
+
 var Lattice = React.createClass({
   displayName: 'Lattice',
 
@@ -27,8 +29,16 @@ var Lattice = React.createClass({
 var LatticeBox = React.createClass({
   displayName: 'LatticeBox',
 
+  handleClick: function handleClick() {
+    console.log('lolo');
+    this.setState({ owner: 'x' });
+  },
+  getInitialState: function getInitialState() {
+    return { owner: 'u' };
+  },
   render: function render() {
-    return React.createElement('div', { className: 'lattice__box' });
+    var ownerClass = 'box--' + this.state.owner;
+    return React.createElement('div', { className: 'lattice__box', onClick: this.handleClick });
   }
 });
 
