@@ -25,7 +25,6 @@ var Lattice = React.createClass({
 
 var LatticeBox = React.createClass({
   handleClick: function() {
-    console.log('lolo');
     this.setState({owner: 'x'});
   },
   getInitialState: function() {
@@ -34,7 +33,7 @@ var LatticeBox = React.createClass({
   render: function() {
     var ownerClass = 'box--' + this.state.owner;
     return (
-      <div className="lattice__box" onClick={this.handleClick}>
+      <div className={['lattice__box', ownerClass].join(' ')} onClick={this.handleClick}>
       </div>
     );
   }
