@@ -6,6 +6,18 @@ var ReactDOM = require('react-dom');
 
 var playerType = 'x';
 
+var gameData = {
+  box1: 'u',
+  box2: 'u',
+  box3: 'u',
+  box4: 'u',
+  box5: 'u',
+  box6: 'u',
+  box7: 'u',
+  box8: 'u',
+  box9: 'u'
+};
+
 var Lattice = React.createClass({
   displayName: 'Lattice',
 
@@ -13,15 +25,15 @@ var Lattice = React.createClass({
     return React.createElement(
       'div',
       { className: 'lattice' },
-      React.createElement(LatticeBox, null),
-      React.createElement(LatticeBox, null),
-      React.createElement(LatticeBox, null),
-      React.createElement(LatticeBox, null),
-      React.createElement(LatticeBox, null),
-      React.createElement(LatticeBox, null),
-      React.createElement(LatticeBox, null),
-      React.createElement(LatticeBox, null),
-      React.createElement(LatticeBox, null)
+      React.createElement(LatticeBox, { id: 'box1', handleChange: this.props.data.box1 }),
+      React.createElement(LatticeBox, { id: 'box2', handleChange: this.props.data.box2 }),
+      React.createElement(LatticeBox, { id: 'box3', handleChange: this.props.data.box3 }),
+      React.createElement(LatticeBox, { id: 'box5', handleChange: this.props.data.box4 }),
+      React.createElement(LatticeBox, { id: 'box4', handleChange: this.props.data.box5 }),
+      React.createElement(LatticeBox, { id: 'box6', handleChange: this.props.data.box6 }),
+      React.createElement(LatticeBox, { id: 'box7', handleChange: this.props.data.box7 }),
+      React.createElement(LatticeBox, { id: 'box8', handleChange: this.props.data.box8 }),
+      React.createElement(LatticeBox, { id: 'box9', handleChange: this.props.data.box9 })
     );
   }
 });
@@ -29,19 +41,26 @@ var Lattice = React.createClass({
 var LatticeBox = React.createClass({
   displayName: 'LatticeBox',
 
-  handleClick: function handleClick() {
-    this.setState({ owner: 'x' });
-  },
   getInitialState: function getInitialState() {
     return { owner: 'u' };
   },
+  handleClick: function handleClick() {
+    var id = this.props.id;
+    gameData[id] = 'x';
+    //this.setState({owner: gameData[id]});
+  },
+  handleChange: function handleChange(e) {
+    if (this.state.owner != e) {
+      this.setState({ owner: e });
+    }
+  },
   render: function render() {
     var ownerClass = 'box--' + this.state.owner;
-    return React.createElement('div', { className: ['lattice__box', ownerClass].join(' '), onClick: this.handleClick });
+    return React.createElement('div', { id: this.props.id, className: ['lattice__box', ownerClass].join(' '), onClick: this.handleClick });
   }
 });
 
-ReactDOM.render(React.createElement(Lattice, null), document.getElementById('container'));
+ReactDOM.render(React.createElement(Lattice, { data: gameData }), document.getElementById('container'));
 
 },{"react":172,"react-dom":29}],2:[function(require,module,exports){
 (function (process){
