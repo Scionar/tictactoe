@@ -1,6 +1,7 @@
 $box-side: 150px;
 
 .lattice {
+  border: 1px solid #000;
   height: (3 * $box-side);
   width: (3 * $box-side);
 }
@@ -17,10 +18,13 @@ $box-side: 150px;
 
 .box--x:before {
   color: #000;
-  content: "\274c";
+  content: "\2716";
   font-size: $box-side;
   left: 50%;
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+.box--x {
 }
