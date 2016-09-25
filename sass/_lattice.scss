@@ -16,9 +16,9 @@ $box-side: 150px;
   width: $box-side;
 }
 
-.box--x:before {
+@mixin box-owner($content) {
   color: #000;
-  content: "\2716";
+  content: $content;
   font-size: $box-side;
   left: 50%;
   position: absolute;
@@ -26,5 +26,10 @@ $box-side: 150px;
   transform: translate(-50%, -50%);
 }
 
-.box--x {
+.box--x:before {
+  @include box-owner("X");
+}
+
+.box--o:before {
+  @include box-owner("O");
 }
