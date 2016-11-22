@@ -17,19 +17,45 @@ var gameData = {
   box9: 'u'
 };
 
+/* Returns true if is possible to add opponent move. False if not. False happens
+ * only if lattice is already full.
+ */
+function opponentsTurn() {
+  var openSlots = [];
+  var target = null;
+
+  // Gather empty slots
+  for (var key in gameData) {
+    if (gameData.hasOwnProperty(key)) {
+      if (gameData[key] == 'u') {
+        openSlots.push(key);
+      }
+    }
+  }
+
+  // If there was empty slots we mark one of them.
+  if (openSlots.length) {
+    var targetNumber = Math.floor((Math.random() * openSlots.length));
+    target = openSlots[targetNumber];
+    gameData[target] = 'o';
+
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 var Lattice = React.createClass({
   render: function() {
+    let lattices = [];
+    for (var i = 1; i <= 9; i++) {
+      lattices[i] = <LatticeBox key={i} />;
+    }
+
     return (
       <div className="lattice">
-        <LatticeBox id="box1" handleChange={this.props.data.box1} />
-        <LatticeBox id="box2" handleChange={this.props.data.box2} />
-        <LatticeBox id="box3" handleChange={this.props.data.box3} />
-        <LatticeBox id="box5" handleChange={this.props.data.box4} />
-        <LatticeBox id="box4" handleChange={this.props.data.box5} />
-        <LatticeBox id="box6" handleChange={this.props.data.box6} />
-        <LatticeBox id="box7" handleChange={this.props.data.box7} />
-        <LatticeBox id="box8" handleChange={this.props.data.box8} />
-        <LatticeBox id="box9" handleChange={this.props.data.box9} />
+        {lattices}
       </div>
     );
   }
@@ -40,14 +66,13 @@ var LatticeBox = React.createClass({
     return {owner: 'u'};
   },
   handleClick: function() {
-    var id = this.props.id;
-    gameData[id] = 'x';
-    //this.setState({owner: gameData[id]});
+    this.changeOwnership('x');
+    opponentsTurn();
   },
-  handleChange: function(e) {
-    if (this.state.owner != e) {
-      this.setState({owner: e});
-    }
+  _changeOwnership: function($mark) {
+    var id = this.props.id;
+    gameData[id] = $mark;
+    this.setState({owner: gameData[id]});
   },
   render: function() {
     var ownerClass = 'box--' + this.state.owner;
