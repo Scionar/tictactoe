@@ -26,7 +26,6 @@ function opponentsTurn(data) {
   if (openSlots.length) {
     var targetNumber = Math.floor((Math.random() * openSlots.length));
     target = openSlots[targetNumber];
-    console.log('COM: ' + target);
     return target;
   }
   else {
@@ -71,35 +70,42 @@ class Lattice extends React.Component {
     super();
     this.state = {
       boxStatus: Array(9).fill('u'),
+      winner: false,
     };
   }
 
   handleClick(i) {
-    const boxStatus = this.state.boxStatus.slice();
-    if (boxStatus[i] === 'u') {
-      boxStatus[i] = 'x';
+    if (this.state.winner == false) {
+      const boxStatus = this.state.boxStatus.slice();
+      if (boxStatus[i] === 'u') {
+        boxStatus[i] = 'x';
 
-      // Check status
-      let winner = check(boxStatus);
-      console.log('Check: ' + winner);
-      if (winner !== false) {
-        console.log(winner + ' won!');
+        // Check status
+        let winner = check(boxStatus);
+        if (winner !== false) {
+          console.log(winner + ' won!');
+          this.setState({
+            boxStatus: boxStatus,
+            winner: winner
+          });
+          return;
+        }
+
+        // Computer turn
+        let target = opponentsTurn(boxStatus);
+        if (target !== false) {
+          boxStatus[target] = 'o';
+        }
+
+        // Check status
+        winner = check(boxStatus);
+        if (winner !== false) {
+          console.log(winner + ' won!');
+          this.setState({winner: winner});
+        }
+
+        this.setState({boxStatus: boxStatus});
       }
-
-      // Computer turn
-      let target = opponentsTurn(boxStatus);
-      if (target !== false) {
-        boxStatus[target] = 'o';
-      }
-
-      // Check status
-      winner = check(boxStatus);
-      console.log('Check: ' + winner);
-      if (winner !== false) {
-        console.log(winner + ' won!');
-      }
-
-      this.setState({boxStatus: boxStatus});
     }
   }
 

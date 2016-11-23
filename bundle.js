@@ -35,7 +35,6 @@ function opponentsTurn(data) {
   if (openSlots.length) {
     var targetNumber = Math.floor(Math.random() * openSlots.length);
     target = openSlots[targetNumber];
-    console.log('COM: ' + target);
     return target;
   } else {
     return false;
@@ -77,7 +76,8 @@ var Lattice = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Lattice.__proto__ || Object.getPrototypeOf(Lattice)).call(this));
 
     _this.state = {
-      boxStatus: Array(9).fill('u')
+      boxStatus: Array(9).fill('u'),
+      winner: false
     };
     return _this;
   }
@@ -85,31 +85,37 @@ var Lattice = function (_React$Component) {
   _createClass(Lattice, [{
     key: 'handleClick',
     value: function handleClick(i) {
-      var boxStatus = this.state.boxStatus.slice();
-      if (boxStatus[i] === 'u') {
-        boxStatus[i] = 'x';
+      if (this.state.winner == false) {
+        var boxStatus = this.state.boxStatus.slice();
+        if (boxStatus[i] === 'u') {
+          boxStatus[i] = 'x';
 
-        // Check status
-        var winner = check(boxStatus);
-        console.log('Check: ' + winner);
-        if (winner !== false) {
-          console.log(winner + ' won!');
+          // Check status
+          var winner = check(boxStatus);
+          if (winner !== false) {
+            console.log(winner + ' won!');
+            this.setState({
+              boxStatus: boxStatus,
+              winner: winner
+            });
+            return;
+          }
+
+          // Computer turn
+          var target = opponentsTurn(boxStatus);
+          if (target !== false) {
+            boxStatus[target] = 'o';
+          }
+
+          // Check status
+          winner = check(boxStatus);
+          if (winner !== false) {
+            console.log(winner + ' won!');
+            this.setState({ winner: winner });
+          }
+
+          this.setState({ boxStatus: boxStatus });
         }
-
-        // Computer turn
-        var target = opponentsTurn(boxStatus);
-        if (target !== false) {
-          boxStatus[target] = 'o';
-        }
-
-        // Check status
-        winner = check(boxStatus);
-        console.log('Check: ' + winner);
-        if (winner !== false) {
-          console.log(winner + ' won!');
-        }
-
-        this.setState({ boxStatus: boxStatus });
       }
     }
   }, {
