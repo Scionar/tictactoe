@@ -14,21 +14,20 @@ var ReactDOM = require('react-dom');
 
 var playerType = 'x';
 
-var gameData = ['u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u'];
-
-/* Returns true if is possible to add opponent move. False if not. False happens
+/* Returns number of cell if is possible to add opponent move. False if not. False happens
  * only if lattice is already full.
+ *
+ * data
+ * Array of status.
  */
-function opponentsTurn() {
+function opponentsTurn(data) {
   var openSlots = [];
   var target = null;
 
   // Gather empty slots
-  for (var key in gameData) {
-    if (gameData.hasOwnProperty(key)) {
-      if (gameData[key] == 'u') {
-        openSlots.push(key);
-      }
+  for (var i = 0; i < data.length; i++) {
+    if (data[i] == 'u') {
+      openSlots.push(i);
     }
   }
 
@@ -36,9 +35,8 @@ function opponentsTurn() {
   if (openSlots.length) {
     var targetNumber = Math.floor(Math.random() * openSlots.length);
     target = openSlots[targetNumber];
-    gameData[target] = 'o';
     console.log('COM: ' + target);
-    return true;
+    return target;
   } else {
     return false;
   }
@@ -50,13 +48,35 @@ var Lattice = function (_React$Component) {
   function Lattice() {
     _classCallCheck(this, Lattice);
 
-    return _possibleConstructorReturn(this, (Lattice.__proto__ || Object.getPrototypeOf(Lattice)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Lattice.__proto__ || Object.getPrototypeOf(Lattice)).call(this));
+
+    _this.state = {
+      boxStatus: Array(9).fill('u')
+    };
+    return _this;
   }
 
   _createClass(Lattice, [{
+    key: 'handleClick',
+    value: function handleClick(i) {
+      var boxStatus = this.state.boxStatus.slice();
+      boxStatus[i] = 'x';
+
+      // Computer turn
+      var target = opponentsTurn(boxStatus);
+      if (target !== false) {
+        boxStatus[target] = 'o';
+      }
+      this.setState({ boxStatus: boxStatus });
+    }
+  }, {
     key: 'renderLattice',
     value: function renderLattice(i) {
-      return React.createElement(LatticeBox, { key: i, href: 'box' + i, owner: gameData[i], boxId: i });
+      var _this2 = this;
+
+      return React.createElement(LatticeBox, { onClick: function onClick() {
+          return _this2.handleClick(i);
+        }, key: i, href: 'box' + i, status: this.state.boxStatus[i], bodId: i });
     }
   }, {
     key: 'render',
@@ -85,34 +105,18 @@ var LatticeBox = function (_React$Component2) {
   function LatticeBox() {
     _classCallCheck(this, LatticeBox);
 
-    var _this2 = _possibleConstructorReturn(this, (LatticeBox.__proto__ || Object.getPrototypeOf(LatticeBox)).call(this));
-
-    _this2.state = {
-      owner: 'u'
-    };
-    _this2.handleClick = _this2.handleClick.bind(_this2);
-    return _this2;
+    return _possibleConstructorReturn(this, (LatticeBox.__proto__ || Object.getPrototypeOf(LatticeBox)).apply(this, arguments));
   }
 
   _createClass(LatticeBox, [{
-    key: 'handleClick',
-    value: function handleClick() {
-      if (this.state.owner == 'u') {
-        console.log('PLA: ' + this.props.boxId);
-        gameData[this.props.boxId] = 'x';
-        this.setState({
-          owner: 'x'
-        });
-        opponentsTurn();
-        console.log('gameData: ' + gameData.join(','));
-        console.log(this.refs.box1);
-      }
-    }
-  }, {
     key: 'render',
     value: function render() {
-      var ownerClass = 'box--' + this.state.owner;
-      return React.createElement('div', { className: ['lattice__box', ownerClass].join(' '), onClick: this.handleClick });
+      var _this4 = this;
+
+      var ownerClass = 'box--' + this.props.status;
+      return React.createElement('div', { className: ['lattice__box', ownerClass].join(' '), onClick: function onClick() {
+          return _this4.props.onClick();
+        } });
     }
   }]);
 
@@ -121,7 +125,7 @@ var LatticeBox = function (_React$Component2) {
 
 ;
 
-ReactDOM.render(React.createElement(Lattice, { data: gameData }), document.getElementById('container'));
+ReactDOM.render(React.createElement(Lattice, null), document.getElementById('container'));
 
 },{"react":178,"react-dom":27}],2:[function(require,module,exports){
 (function (process){
