@@ -76,29 +76,31 @@ class Lattice extends React.Component {
 
   handleClick(i) {
     const boxStatus = this.state.boxStatus.slice();
-    boxStatus[i] = 'x';
+    if (boxStatus[i] === 'u') {
+      boxStatus[i] = 'x';
 
-    // Check status
-    let winner = check(boxStatus);
-    console.log('Check: ' + winner);
-    if (winner !== false) {
-      console.log(winner + ' won!');
+      // Check status
+      let winner = check(boxStatus);
+      console.log('Check: ' + winner);
+      if (winner !== false) {
+        console.log(winner + ' won!');
+      }
+
+      // Computer turn
+      let target = opponentsTurn(boxStatus);
+      if (target !== false) {
+        boxStatus[target] = 'o';
+      }
+
+      // Check status
+      winner = check(boxStatus);
+      console.log('Check: ' + winner);
+      if (winner !== false) {
+        console.log(winner + ' won!');
+      }
+
+      this.setState({boxStatus: boxStatus});
     }
-
-    // Computer turn
-    let target = opponentsTurn(boxStatus);
-    if (target !== false) {
-      boxStatus[target] = 'o';
-    }
-
-    // Check status
-    winner = check(boxStatus);
-    console.log('Check: ' + winner);
-    if (winner !== false) {
-      console.log(winner + ' won!');
-    }
-
-    this.setState({boxStatus: boxStatus});
   }
 
   renderLattice(i) {

@@ -86,29 +86,31 @@ var Lattice = function (_React$Component) {
     key: 'handleClick',
     value: function handleClick(i) {
       var boxStatus = this.state.boxStatus.slice();
-      boxStatus[i] = 'x';
+      if (boxStatus[i] === 'u') {
+        boxStatus[i] = 'x';
 
-      // Check status
-      var winner = check(boxStatus);
-      console.log('Check: ' + winner);
-      if (winner !== false) {
-        console.log(winner + ' won!');
+        // Check status
+        var winner = check(boxStatus);
+        console.log('Check: ' + winner);
+        if (winner !== false) {
+          console.log(winner + ' won!');
+        }
+
+        // Computer turn
+        var target = opponentsTurn(boxStatus);
+        if (target !== false) {
+          boxStatus[target] = 'o';
+        }
+
+        // Check status
+        winner = check(boxStatus);
+        console.log('Check: ' + winner);
+        if (winner !== false) {
+          console.log(winner + ' won!');
+        }
+
+        this.setState({ boxStatus: boxStatus });
       }
-
-      // Computer turn
-      var target = opponentsTurn(boxStatus);
-      if (target !== false) {
-        boxStatus[target] = 'o';
-      }
-
-      // Check status
-      winner = check(boxStatus);
-      console.log('Check: ' + winner);
-      if (winner !== false) {
-        console.log(winner + ' won!');
-      }
-
-      this.setState({ boxStatus: boxStatus });
     }
   }, {
     key: 'renderLattice',
