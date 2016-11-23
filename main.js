@@ -34,6 +34,38 @@ function opponentsTurn(data) {
   }
 }
 
+/* Returns 'x' or 'o' depending on winner. False if no yet winner.
+ *
+ * data
+ * Array of status.
+ */
+function check(data) {
+  let winLines = [
+    // Horizontal lines
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    // Vertical lines
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    // Oblique lines
+    [0,4,8],
+    [2,4,6]
+  ];
+
+  for (let i = 0; i < winLines.length; i++) {
+    let line = winLines[i];
+    // All the boxes are same?
+    if (data[line[0]] === data[line[1]] && data[line[0]] === data[line[2]]) {
+      if (data[line[0]] !== 'u') {
+        return data[line[0]];
+      }
+    }
+  }
+  return false;
+}
+
 class Lattice extends React.Component {
   constructor() {
     super();
@@ -46,11 +78,26 @@ class Lattice extends React.Component {
     const boxStatus = this.state.boxStatus.slice();
     boxStatus[i] = 'x';
 
+    // Check status
+    let winner = check(boxStatus);
+    console.log('Check: ' + winner);
+    if (winner !== false) {
+      console.log(winner + ' won!');
+    }
+
     // Computer turn
     let target = opponentsTurn(boxStatus);
     if (target !== false) {
       boxStatus[target] = 'o';
     }
+
+    // Check status
+    winner = check(boxStatus);
+    console.log('Check: ' + winner);
+    if (winner !== false) {
+      console.log(winner + ' won!');
+    }
+
     this.setState({boxStatus: boxStatus});
   }
 
