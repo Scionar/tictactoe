@@ -5,17 +5,17 @@ var ReactDOM = require('react-dom');
 
 var playerType = 'x';
 
-var gameData = {
-  box1: 'u',
-  box2: 'u',
-  box3: 'u',
-  box4: 'u',
-  box5: 'u',
-  box6: 'u',
-  box7: 'u',
-  box8: 'u',
-  box9: 'u'
-};
+const gameData = [
+  'u',
+  'u',
+  'u',
+  'u',
+  'u',
+  'u',
+  'u',
+  'u',
+  'u'
+];
 
 /* Returns true if is possible to add opponent move. False if not. False happens
  * only if lattice is already full.
@@ -38,7 +38,7 @@ function opponentsTurn() {
     var targetNumber = Math.floor((Math.random() * openSlots.length));
     target = openSlots[targetNumber];
     gameData[target] = 'o';
-
+    console.log('COM: ' + target);
     return true;
   }
   else {
@@ -46,11 +46,15 @@ function opponentsTurn() {
   }
 }
 
-var Lattice = React.createClass({
-  render: function() {
+class Lattice extends React.Component {
+  renderLattice(i) {
+      return <LatticeBox key={i} href={'box' + i} owner={gameData[i]} boxId={i} />;
+  }
+
+  render() {
     let lattices = [];
-    for (var i = 1; i <= 9; i++) {
-      lattices[i] = <LatticeBox key={i} />;
+    for (var i = 0; i < 9; i++) {
+      lattices.push(this.renderLattice(i));
     }
 
     return (
@@ -59,29 +63,38 @@ var Lattice = React.createClass({
       </div>
     );
   }
-});
+};
 
-var LatticeBox = React.createClass({
-  getInitialState: function() {
-    return {owner: 'u'};
-  },
-  handleClick: function() {
-    this.changeOwnership('x');
-    opponentsTurn();
-  },
-  _changeOwnership: function($mark) {
-    var id = this.props.id;
-    gameData[id] = $mark;
-    this.setState({owner: gameData[id]});
-  },
-  render: function() {
+class LatticeBox extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      owner: 'u'
+    }
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    if (this.state.owner == 'u') {
+      console.log('PLA: ' + this.props.boxId);
+      gameData[this.props.boxId] = 'x';
+      this.setState({
+        owner: 'x'
+      });
+      opponentsTurn();
+      console.log('gameData: ' + gameData.join(','));
+      console.log(this.refs.box1);
+    }
+  }
+
+  render() {
     var ownerClass = 'box--' + this.state.owner;
     return (
-      <div id={this.props.id} className={['lattice__box', ownerClass].join(' ')} onClick={this.handleClick}>
+      <div className={['lattice__box', ownerClass].join(' ')} onClick={this.handleClick}>
       </div>
     );
   }
-});
+};
 
 ReactDOM.render(
   <Lattice data={gameData} />,

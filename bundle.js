@@ -1,22 +1,20 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 
 var playerType = 'x';
 
-var gameData = {
-  box1: 'u',
-  box2: 'u',
-  box3: 'u',
-  box4: 'u',
-  box5: 'u',
-  box6: 'u',
-  box7: 'u',
-  box8: 'u',
-  box9: 'u'
-};
+var gameData = ['u', 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u'];
 
 /* Returns true if is possible to add opponent move. False if not. False happens
  * only if lattice is already full.
@@ -39,50 +37,89 @@ function opponentsTurn() {
     var targetNumber = Math.floor(Math.random() * openSlots.length);
     target = openSlots[targetNumber];
     gameData[target] = 'o';
-
+    console.log('COM: ' + target);
     return true;
   } else {
     return false;
   }
 }
 
-var Lattice = React.createClass({
-  displayName: 'Lattice',
+var Lattice = function (_React$Component) {
+  _inherits(Lattice, _React$Component);
 
-  render: function render() {
-    var lattices = [];
-    for (var i = 1; i <= 9; i++) {
-      lattices[i] = React.createElement(LatticeBox, { key: i });
+  function Lattice() {
+    _classCallCheck(this, Lattice);
+
+    return _possibleConstructorReturn(this, (Lattice.__proto__ || Object.getPrototypeOf(Lattice)).apply(this, arguments));
+  }
+
+  _createClass(Lattice, [{
+    key: 'renderLattice',
+    value: function renderLattice(i) {
+      return React.createElement(LatticeBox, { key: i, href: 'box' + i, owner: gameData[i], boxId: i });
     }
+  }, {
+    key: 'render',
+    value: function render() {
+      var lattices = [];
+      for (var i = 0; i < 9; i++) {
+        lattices.push(this.renderLattice(i));
+      }
 
-    return React.createElement(
-      'div',
-      { className: 'lattice' },
-      lattices
-    );
+      return React.createElement(
+        'div',
+        { className: 'lattice' },
+        lattices
+      );
+    }
+  }]);
+
+  return Lattice;
+}(React.Component);
+
+;
+
+var LatticeBox = function (_React$Component2) {
+  _inherits(LatticeBox, _React$Component2);
+
+  function LatticeBox() {
+    _classCallCheck(this, LatticeBox);
+
+    var _this2 = _possibleConstructorReturn(this, (LatticeBox.__proto__ || Object.getPrototypeOf(LatticeBox)).call(this));
+
+    _this2.state = {
+      owner: 'u'
+    };
+    _this2.handleClick = _this2.handleClick.bind(_this2);
+    return _this2;
   }
-});
 
-var LatticeBox = React.createClass({
-  displayName: 'LatticeBox',
+  _createClass(LatticeBox, [{
+    key: 'handleClick',
+    value: function handleClick() {
+      if (this.state.owner == 'u') {
+        console.log('PLA: ' + this.props.boxId);
+        gameData[this.props.boxId] = 'x';
+        this.setState({
+          owner: 'x'
+        });
+        opponentsTurn();
+        console.log('gameData: ' + gameData.join(','));
+        console.log(this.refs.box1);
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var ownerClass = 'box--' + this.state.owner;
+      return React.createElement('div', { className: ['lattice__box', ownerClass].join(' '), onClick: this.handleClick });
+    }
+  }]);
 
-  getInitialState: function getInitialState() {
-    return { owner: 'u' };
-  },
-  handleClick: function handleClick() {
-    this.changeOwnership('x');
-    opponentsTurn();
-  },
-  _changeOwnership: function _changeOwnership($mark) {
-    var id = this.props.id;
-    gameData[id] = $mark;
-    this.setState({ owner: gameData[id] });
-  },
-  render: function render() {
-    var ownerClass = 'box--' + this.state.owner;
-    return React.createElement('div', { id: this.props.id, className: ['lattice__box', ownerClass].join(' '), onClick: this.handleClick });
-  }
-});
+  return LatticeBox;
+}(React.Component);
+
+;
 
 ReactDOM.render(React.createElement(Lattice, { data: gameData }), document.getElementById('container'));
 
@@ -20515,25 +20552,4 @@ module.exports = traverseAllChildren;
 
 module.exports = require('./lib/React');
 
-},{"./lib/React":156}],179:[function(require,module,exports){
-'use strict';
-
-/**
- * Actions
- */
-
-var clickbox = function clickbox(id, mark) {
-  return {
-    type: 'BOX_CLICK',
-    mark: mark,
-    id: id
-  };
-};
-
-/**
- *  Reducers
- */
-
-var boxes = function boxes() {};
-
-},{}]},{},[1,179]);
+},{"./lib/React":156}]},{},[1]);
