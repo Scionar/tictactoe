@@ -3,22 +3,32 @@
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-
 var playerType = 'x';
 
-/* Returns number of cell if is possible to add opponent move. False if not. False happens
- * only if lattice is already full.
+/**
+ * Returns number of cell if is possible to add opponent move. NULL if not.
+ * NULL happens only if lattice is already full.
  *
- * data
- * Array of status.
+ * @param {Array.<string>} data Game status.
+ *
+ * @return {?number} Number for opponents chosen box number. NULL if
+ *     if no more free boxes.
  */
 function opponentsTurn(data) {
   var openSlots = [];
@@ -37,14 +47,17 @@ function opponentsTurn(data) {
     target = openSlots[targetNumber];
     return target;
   } else {
-    return false;
+    return null;
   }
 }
 
-/* Returns 'x' or 'o' depending on winner. False if no yet winner.
+/**
+ * Returns 'x' or 'o' depending on winner. False if no yet winner.
  *
- * data
- * Array of status.
+ * @param {Array.<string>} data Game status.
+ *
+ * @return {?string} Returns players mark as string. If no winner found
+ *     returns NULL.
  */
 function check(data) {
   var winLines = [
@@ -64,7 +77,7 @@ function check(data) {
       }
     }
   }
-  return false;
+  return null;
 }
 
 var Lattice = function (_React$Component) {
@@ -92,7 +105,7 @@ var Lattice = function (_React$Component) {
 
           // Check status
           var winner = check(boxStatus);
-          if (winner !== false) {
+          if (winner !== null) {
             console.log(winner + ' won!');
             this.setState({
               boxStatus: boxStatus,
@@ -103,13 +116,13 @@ var Lattice = function (_React$Component) {
 
           // Computer turn
           var target = opponentsTurn(boxStatus);
-          if (target !== false) {
+          if (target !== null) {
             boxStatus[target] = 'o';
           }
 
           // Check status
           winner = check(boxStatus);
-          if (winner !== false) {
+          if (winner !== null) {
             console.log(winner + ' won!');
             this.setState({ winner: winner });
           }
@@ -123,9 +136,9 @@ var Lattice = function (_React$Component) {
     value: function renderLattice(i) {
       var _this2 = this;
 
-      return React.createElement(LatticeBox, { onClick: function onClick() {
+      return _react2.default.createElement(LatticeBox, { key: i, onClick: function onClick() {
           return _this2.handleClick(i);
-        }, key: i, href: 'box' + i, status: this.state.boxStatus[i], bodId: i });
+        }, status: this.state.boxStatus[i] });
     }
   }, {
     key: 'render',
@@ -135,7 +148,7 @@ var Lattice = function (_React$Component) {
         lattices.push(this.renderLattice(i));
       }
 
-      return React.createElement(
+      return _react2.default.createElement(
         'div',
         { className: 'lattice' },
         lattices
@@ -144,7 +157,7 @@ var Lattice = function (_React$Component) {
   }]);
 
   return Lattice;
-}(React.Component);
+}(_react2.default.Component);
 
 ;
 
@@ -162,19 +175,21 @@ var LatticeBox = function (_React$Component2) {
     value: function render() {
       var _this4 = this;
 
-      var ownerClass = 'box--' + this.props.status;
-      return React.createElement('div', { className: ['lattice__box', ownerClass].join(' '), onClick: function onClick() {
+      var boxClasses = [];
+      boxClasses.push('lattice__box');
+      boxClasses.push('lattice__box--' + this.props.status);
+      return _react2.default.createElement('div', { className: boxClasses.join(' '), onClick: function onClick() {
           return _this4.props.onClick();
         } });
     }
   }]);
 
   return LatticeBox;
-}(React.Component);
+}(_react2.default.Component);
 
 ;
 
-ReactDOM.render(React.createElement(Lattice, null), document.getElementById('container'));
+_reactDom2.default.render(_react2.default.createElement(Lattice, null), document.getElementById('container'));
 
 },{"react":178,"react-dom":27}],2:[function(require,module,exports){
 (function (process){

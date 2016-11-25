@@ -1,15 +1,16 @@
-'use strict';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
+const playerType = 'x';
 
-var playerType = 'x';
-
-/* Returns number of cell if is possible to add opponent move. False if not. False happens
- * only if lattice is already full.
+/**
+ * Returns number of cell if is possible to add opponent move. NULL if not.
+ * NULL happens only if lattice is already full.
  *
- * data
- * Array of status.
+ * @param {Array.<string>} data Game status.
+ *
+ * @return {?number} Number for opponents chosen box number. NULL if
+ *     if no more free boxes.
  */
 function opponentsTurn(data) {
   var openSlots = [];
@@ -29,14 +30,17 @@ function opponentsTurn(data) {
     return target;
   }
   else {
-    return false;
+    return null;
   }
 }
 
-/* Returns 'x' or 'o' depending on winner. False if no yet winner.
+/**
+ * Returns 'x' or 'o' depending on winner. False if no yet winner.
  *
- * data
- * Array of status.
+ * @param {Array.<string>} data Game status.
+ *
+ * @return {?string} Returns players mark as string. If no winner found
+ *     returns NULL.
  */
 function check(data) {
   let winLines = [
@@ -62,7 +66,7 @@ function check(data) {
       }
     }
   }
-  return false;
+  return null;
 }
 
 class Lattice extends React.Component {
@@ -82,7 +86,7 @@ class Lattice extends React.Component {
 
         // Check status
         let winner = check(boxStatus);
-        if (winner !== false) {
+        if (winner !== null) {
           console.log(winner + ' won!');
           this.setState({
             boxStatus: boxStatus,
@@ -93,13 +97,13 @@ class Lattice extends React.Component {
 
         // Computer turn
         let target = opponentsTurn(boxStatus);
-        if (target !== false) {
+        if (target !== null) {
           boxStatus[target] = 'o';
         }
 
         // Check status
         winner = check(boxStatus);
-        if (winner !== false) {
+        if (winner !== null) {
           console.log(winner + ' won!');
           this.setState({winner: winner});
         }
@@ -110,7 +114,7 @@ class Lattice extends React.Component {
   }
 
   renderLattice(i) {
-      return <LatticeBox onClick={() => this.handleClick(i)} key={i} href={'box' + i} status={this.state.boxStatus[i]} bodId={i} />;
+    return <LatticeBox key={i} onClick={() => this.handleClick(i)} status={this.state.boxStatus[i]} />;
   }
 
   render() {
@@ -129,9 +133,11 @@ class Lattice extends React.Component {
 
 class LatticeBox extends React.Component {
   render() {
-    var ownerClass = 'box--' + this.props.status;
+    let boxClasses = [];
+    boxClasses.push('lattice__box');
+    boxClasses.push('lattice__box--' + this.props.status);
     return (
-      <div className={['lattice__box', ownerClass].join(' ')} onClick={() => this.props.onClick()}>
+      <div className={boxClasses.join(' ')} onClick={() => this.props.onClick()}>
       </div>
     );
   }
