@@ -8,14 +8,11 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
     "babelify": "^7.3.0",
-    "browserify": "^13.1.1",
-    "react": "^15.4.0",
-    "react-dom": "^15.4.0",
-    "redux": "^3.6.0",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
     "watchify": "^3.7.0"
   },
   "scripts": {
-    "build": "browserify ./main.js -t babelify -o bundle.js",
     "start": "watchify ./main.js -v -t babelify -o bundle.js"
   },
   "devDependencies": {
