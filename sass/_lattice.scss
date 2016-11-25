@@ -26,10 +26,10 @@ $box-side: 150px;
   transform: translate(-50%, -50%);
 }
 
-.box--x:before {
+.lattice__box--x:before {
   @include box-owner("X");
 }
 
-.box--o:before {
+.lattice__box--o:before {
   @include box-owner("O");
 }
