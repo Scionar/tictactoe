@@ -13,11 +13,11 @@ const playerType = 'x';
  *     if no more free boxes.
  */
 function opponentsTurn(data) {
-  var openSlots = [];
-  var target = null;
+  let openSlots = [];
+  let target = null;
 
   // Gather empty slots
-  for (var i = 0; i < data.length; i++) {
+  for (let i = 0; i < data.length; i++) {
     if (data[i] == 'u') {
       openSlots.push(i);
     }
@@ -25,7 +25,7 @@ function opponentsTurn(data) {
 
   // If there was empty slots we mark one of them.
   if (openSlots.length) {
-    var targetNumber = Math.floor((Math.random() * openSlots.length));
+    let targetNumber = Math.floor((Math.random() * openSlots.length));
     target = openSlots[targetNumber];
     return target;
   }
@@ -119,7 +119,7 @@ class Lattice extends React.Component {
 
   render() {
     let lattices = [];
-    for (var i = 0; i < 9; i++) {
+    for (let i = 0; i < 9; i++) {
       lattices.push(this.renderLattice(i));
     }
 
